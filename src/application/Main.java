@@ -1,7 +1,7 @@
 package application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 
 public class Main extends javafx.application.Application {
 
@@ -9,8 +9,12 @@ public class Main extends javafx.application.Application {
     public void start(javafx.stage.Stage primaryStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainView.fxml"));
-            Parent root = loader.load();
-            Scene mainScene = new Scene(root);
+            ScrollPane scrollPane = loader.load();
+
+            scrollPane.setFitToWidth(true);
+            scrollPane.setFitToHeight(true);
+
+            Scene mainScene = new Scene(scrollPane);
             primaryStage.setTitle("JavaFX JDBC Example");
             primaryStage.setScene(mainScene);
             primaryStage.show();
