@@ -5,6 +5,8 @@ import javafx.scene.control.ScrollPane;
 
 public class Main extends javafx.application.Application {
 
+    private static Scene mainScene;
+
     @Override
     public void start(javafx.stage.Stage primaryStage) {
         try {
@@ -14,13 +16,17 @@ public class Main extends javafx.application.Application {
             scrollPane.setFitToWidth(true);
             scrollPane.setFitToHeight(true);
 
-            Scene mainScene = new Scene(scrollPane);
+            mainScene = new Scene(scrollPane);
             primaryStage.setTitle("JavaFX JDBC Example");
             primaryStage.setScene(mainScene);
             primaryStage.show();
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Scene getMainScene() {
+        return mainScene;
     }
 
     public static void main(String[] args) {
