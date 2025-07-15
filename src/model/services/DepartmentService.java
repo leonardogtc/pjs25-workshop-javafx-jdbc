@@ -1,0 +1,17 @@
+package model.services;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import model.entities.Department;
+
+public class DepartmentService {
+    public List<Department> findAll() {
+        List<Department> list = new ArrayList<>();
+        // Simulating a database call with hardcoded data
+        list.add(new Department(1, "Electronics"));
+        list.add(new Department(2, "Books"));
+        list.add(new Department(3, "Clothing"));
+        return list;
+    }
+}
