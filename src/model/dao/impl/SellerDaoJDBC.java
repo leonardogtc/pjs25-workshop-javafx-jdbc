@@ -12,9 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import model.dao.SellerDao;
-import model.entities.Seller;
-
 public class SellerDaoJDBC implements SellerDao {
 
     private Connection conn;
