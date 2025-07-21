@@ -1,6 +1,5 @@
 package gui.util;
 
-import java.lang.foreign.Linker.Option;
 import java.util.Optional;
 
 import javafx.scene.control.Alert;
@@ -31,7 +30,8 @@ public class Alerts {
      * @param title   The title of the confirmation dialog.
      * @param header  The header text of the confirmation dialog.
      * @param content The content text of the confirmation dialog.
-     * @return An Optional containing the ButtonType that was clicked, or empty if the dialog was closed without a selection.
+     * @return An Optional containing the ButtonType that was clicked, or empty if
+     *         the dialog was closed without a selection.
      */
     public static Optional<ButtonType> showConfirmation(String title, String header, String content) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -40,5 +40,5 @@ public class Alerts {
         alert.setContentText(content);
         return alert.showAndWait();
     }
-        
+
 }

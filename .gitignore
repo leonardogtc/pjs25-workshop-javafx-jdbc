@@ -31,3 +31,8 @@ build/
 nbbuild/
 dist/
 nbdist/
+
+# Eclipse files
+.classpath
+.project
+.settings/
