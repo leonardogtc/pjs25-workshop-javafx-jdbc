@@ -14,4 +14,19 @@ public class Utils {
     public static Stage currentStage(ActionEvent event) {
         return (Stage) ((Node) event.getSource()).getScene().getWindow();
     }
+
+
+    /**
+     * Attempts to parse a string to an Integer.
+     *
+     * @param str the string to parse
+     * @return the parsed Integer, or null if parsing fails
+     */
+    public static Integer tryParseToInt(String str) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return null; // or handle the error as needed
+        }
+    }
 }
