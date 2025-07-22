@@ -20,7 +20,6 @@ public class SellerDaoJDBC implements SellerDao {
         this.conn = conn;
     }
 
-
     @Override
     public void insert(Seller obj) {
         PreparedStatement st = null;
@@ -61,8 +60,8 @@ public class SellerDaoJDBC implements SellerDao {
         String sql = null;
         try {
             sql = "UPDATE public.seller " +
-                "SET \"Name\"=?, \"Email\"=?, \"BirthDate\"=?, \"BaseSalary\"=?, \"DepartmentId\"=? " +
-                "WHERE \"Id\"=?;";
+                    "SET \"Name\"=?, \"Email\"=?, \"BirthDate\"=?, \"BaseSalary\"=?, \"DepartmentId\"=? " +
+                    "WHERE \"Id\"=?;";
             st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setString(1, obj.getName());
             st.setString(2, obj.getEmail());
@@ -102,17 +101,18 @@ public class SellerDaoJDBC implements SellerDao {
         ResultSet rs = null;
         String sql = null;
         try {
-            sql = "SELECT seller.*, department.\"Name\" as DepName\n" +
-                    "FROM seller INNER JOIN department\n" +
-                    "ON seller.\"DepartmentId\" = department.\"ID\"\n" +
-                    "WHERE seller.\"Id\" = ?";
+            sql = "SELECT seller.*, department.Name as DepName" +
+                    "FROM seller INNER JOIN department" +
+                    "ON seller.department_id = department.id" +
+                    "WHERE seller.Id = ?";
 
             st = conn.prepareStatement(sql);
             st.setInt(1, id);
             rs = st.executeQuery();
             if (rs.next()) {
 
-                // Assuming Department is another entity with a constructor that takes id and name
+                // Assuming Department is another entity with a constructor that takes id and
+                // name
                 // You would need to implement the Department class accordingly
                 Department dep = instantiateDepartment(rs);
 
@@ -122,7 +122,6 @@ public class SellerDaoJDBC implements SellerDao {
             } else {
                 return null; // No seller found with the given id
             }
-
 
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
@@ -135,17 +134,17 @@ public class SellerDaoJDBC implements SellerDao {
     private Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException {
         Seller seller = new Seller();
         seller.setId(rs.getInt("Id"));
-        seller.setName(rs.getString("Name"));
-        seller.setEmail(rs.getString("Email"));
-        seller.setBirthDate(rs.getDate("BirthDate"));
-        seller.setBaseSalary(rs.getDouble("BaseSalary"));
+        seller.setName(rs.getString("name"));
+        seller.setEmail(rs.getString("email"));
+        seller.setBirthDate(rs.getDate("birth_date"));
+        seller.setBaseSalary(rs.getDouble("base_salary"));
         seller.setDepartment(dep);
         return seller;
     }
 
     private Department instantiateDepartment(ResultSet rs) throws SQLException {
         Department dep = new Department();
-        dep.setId(rs.getInt("DepartmentId"));
+        dep.setId(rs.getInt("department_id"));
         dep.setName(rs.getString("DepName"));
         return dep;
     }
@@ -156,10 +155,15 @@ public class SellerDaoJDBC implements SellerDao {
         ResultSet rs = null;
         String sql = null;
         try {
-            sql = "SELECT seller.*, department.\"Name\" as DepName " +
+            // sql = "SELECT seller.*, department.\"Name\" as DepName " +
+            //         "FROM seller INNER JOIN department " +
+            //         "ON seller.\"DepartmentId\" = department.\"Id\" " +
+            //         "ORDER BY department.\"Name\"";
+
+            sql = "SELECT seller.*, department.name as DepName " +
                     "FROM seller INNER JOIN department " +
-                    "ON seller.\"DepartmentId\" = department.\"ID\" " +
-                    "ORDER BY department.\"Name\"";
+                    "ON seller.department_id = department.id " +
+                    "ORDER BY department.name";
 
             st = conn.prepareStatement(sql);
             rs = st.executeQuery();
@@ -168,11 +172,11 @@ public class SellerDaoJDBC implements SellerDao {
             Map<Integer, Department> map = new HashMap<>();
 
             while (rs.next()) {
-                Department dep = map.get(rs.getInt("DepartmentId"));
+                Department dep = map.get(rs.getInt("department_id"));
 
                 if (dep == null) {
                     dep = instantiateDepartment(rs);
-                    map.put(rs.getInt("DepartmentId"), dep);
+                    map.put(rs.getInt("department_id"), dep);
                 }
 
                 Seller obj = instantiateSeller(rs, dep);
