@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -14,14 +15,18 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
 import model.services.SellerService;
@@ -63,8 +68,8 @@ public class SellerListController implements Initializable, DataChangeListener {
     public void onButtonNewSellerAction(ActionEvent event) {
         Stage parentStage = Utils.currentStage(event);
         Seller obj = new Seller();
-        // createDialogForm(obj, parentStage, "/gui/SellerForm.fxml");
-        // updateTableView();
+        createDialogForm(obj, parentStage, "/gui/SellerForm.fxml");
+        updateTableView();
     }
 
     public void setSellerService(SellerService service) {
@@ -83,7 +88,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 
         tableColumnBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
         Utils.formatTableColumn(tableColumnBirthDate, "dd/MM/yyyy");
-        
+
         tableColumnBaseSalary.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));
         Utils.formatTableColumnDouble(tableColumnBaseSalary, 2);
 
@@ -108,26 +113,26 @@ public class SellerListController implements Initializable, DataChangeListener {
      * @param parentStage the parent stage for the dialog
      */
     private void createDialogForm(Seller obj, Stage parenStage, String absoluteName) {
-        // try {
-        //     FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
-        //     Pane pane = loader.load();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+            Pane pane = loader.load();
 
-        //     SellerFormController controller = loader.getController();
-        //     controller.setSeller(obj);
-        //     controller.setSellerService(new SellerService());
-        //     controller.subscribeDataChangeListener(this);
-        //     controller.updateFormData();
+            SellerFormController controller = loader.getController();
+            controller.setSeller(obj);
+            controller.setSellerService(new SellerService());
+            controller.subscribeDataChangeListener(this);
+            controller.updateFormData();
 
-        //     Stage dialogStage = new Stage();
-        //     dialogStage.setTitle("Enter Seller Data");
-        //     dialogStage.setScene(new Scene(pane));
-        //     dialogStage.setResizable(false);
-        //     dialogStage.initOwner(parenStage);
-        //     dialogStage.initModality(Modality.WINDOW_MODAL); // Ensures the dialog blocks input to other windows
-        //     dialogStage.showAndWait();
-        // } catch (IOException e) {
-        //     Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
-        // }
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Enter Seller Data");
+            dialogStage.setScene(new Scene(pane));
+            dialogStage.setResizable(false);
+            dialogStage.initOwner(parenStage);
+            dialogStage.initModality(Modality.WINDOW_MODAL); // Ensures the dialog blocks input to other windows
+            dialogStage.showAndWait();
+        } catch (IOException e) {
+            Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
+        }
 
     }
 
