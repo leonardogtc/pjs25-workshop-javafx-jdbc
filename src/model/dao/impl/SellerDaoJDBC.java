@@ -25,7 +25,7 @@ public class SellerDaoJDBC implements SellerDao {
         PreparedStatement st = null;
         String sql = null;
         try {
-            sql = "INSERT INTO seller (\"Name\", \"Email\", \"BirthDate\", \"BaseSalary\", \"DepartmentId\") " +
+            sql = "INSERT INTO seller (name, email, birth_date, base_salary, department_id) " +
                     "VALUES (?, ?, ?, ?, ?)";
             st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setString(1, obj.getName());
@@ -60,8 +60,8 @@ public class SellerDaoJDBC implements SellerDao {
         String sql = null;
         try {
             sql = "UPDATE public.seller " +
-                    "SET \"Name\"=?, \"Email\"=?, \"BirthDate\"=?, \"BaseSalary\"=?, \"DepartmentId\"=? " +
-                    "WHERE \"Id\"=?;";
+                    "SET name=?, email=?, birth_date=?, base_salary=?, department_id=? " +
+                    "WHERE Id=?;";
             st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setString(1, obj.getName());
             st.setString(2, obj.getEmail());
@@ -84,7 +84,7 @@ public class SellerDaoJDBC implements SellerDao {
         PreparedStatement st = null;
         String sql = null;
         try {
-            sql = "DELETE FROM seller WHERE \"Id\" = ?";
+            sql = "DELETE FROM seller WHERE id = ?";
             st = conn.prepareStatement(sql);
             st.setInt(1, id);
             st.executeUpdate();
@@ -111,9 +111,6 @@ public class SellerDaoJDBC implements SellerDao {
             rs = st.executeQuery();
             if (rs.next()) {
 
-                // Assuming Department is another entity with a constructor that takes id and
-                // name
-                // You would need to implement the Department class accordingly
                 Department dep = instantiateDepartment(rs);
 
                 Seller obj = instantiateSeller(rs, dep);
@@ -155,11 +152,6 @@ public class SellerDaoJDBC implements SellerDao {
         ResultSet rs = null;
         String sql = null;
         try {
-            // sql = "SELECT seller.*, department.\"Name\" as DepName " +
-            //         "FROM seller INNER JOIN department " +
-            //         "ON seller.\"DepartmentId\" = department.\"Id\" " +
-            //         "ORDER BY department.\"Name\"";
-
             sql = "SELECT seller.*, department.name as DepName " +
                     "FROM seller INNER JOIN department " +
                     "ON seller.department_id = department.id " +

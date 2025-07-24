@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -116,6 +118,7 @@ public class SellerFormController implements Initializable {
     private Seller getFormData() {
         Seller obj = new Seller();
         ValidationException exception = new ValidationException("Validation error");
+       
         obj.setId(Utils.tryParseToInt(sellerIDField.getText()));
 
         if (sellerNameField.getText() == null || sellerNameField.getText().trim().isEmpty()) {
@@ -123,6 +126,37 @@ public class SellerFormController implements Initializable {
         }
 
         obj.setName(sellerNameField.getText());
+
+        if (sellerEmailField.getText() == null || sellerEmailField.getText().trim().isEmpty()) {
+            exception.addError("email", "Field can't be empty");
+        } else if (!sellerEmailField.getText().matches("^[\\w-\\.]+@[\\w-]+\\.[a-zA-Z]{2,}$")) {
+            exception.addError("email", "Invalid email format");
+        }
+
+        obj.setEmail(sellerEmailField.getText());
+
+        if (sellerDpBirthDateField.getValue() == null) {
+            exception.addError("birthDate", "Field can't be empty");
+        } else {
+            Instant instant = Instant.from(sellerDpBirthDateField.getValue().atStartOfDay(ZoneId.systemDefault()));
+            if(instant.isAfter(Instant.now())) {
+                exception.addError("birthDate", "Birth date cannot be in the future");
+            }
+            obj.setBirthDate(Date.from(instant));
+        }
+
+        if (sellerBaseSalaryField.getText() == null || sellerBaseSalaryField.getText().trim().isEmpty()) {
+            exception.addError("baseSalary", "Field can't be empty");
+        } else {
+            try {
+                obj.setBaseSalary(Utils.tryParseToDouble(sellerBaseSalaryField.getText()));
+            } catch (NumberFormatException e) {
+                exception.addError("baseSalary", "Invalid base salary format");
+            }
+        }
+
+        obj.setDepartment(comboBoxDepartment.getValue());
+
 
         if (exception.getErrors().size() > 0) {
             throw exception;
@@ -232,8 +266,29 @@ public class SellerFormController implements Initializable {
 
     private void setErrorMessages(Map<String, String> errors) {
         Set<String> fields = errors.keySet();
+        
         if (fields.contains("name")) {
             errorMessageLabel.setText(errors.get("name"));
+        } else {
+            errorMessageLabel.setText("");
+        }
+
+        if (fields.contains("email")) {
+            errorMessageLabelEmail.setText(errors.get("email"));
+        } else {
+            errorMessageLabelEmail.setText("");
+        }
+
+        if (fields.contains("baseSalary")) {
+            errorMessageLabelBaseSalary.setText(errors.get("baseSalary"));
+        } else {
+            errorMessageLabelBaseSalary.setText("");
+        }
+
+        if (fields.contains("birthDate")) {
+            errorMessageLabelBirthDate.setText(errors.get("birthDate"));
+        } else {
+            errorMessageLabelBirthDate.setText("");
         }
     }
 

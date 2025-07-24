@@ -39,6 +39,15 @@ public class Utils {
         }
     }
 
+    public static Double tryParseToDouble(String str) {
+        try {
+            return Double.parseDouble(str);
+        } catch (NumberFormatException e) {
+            return null; // or handle the error as needed
+        }
+    }
+
+    
     /**
      * Formats a TableColumn to display Date objects in a specified format.
      *
