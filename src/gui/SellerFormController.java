@@ -1,8 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -17,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Seller;
@@ -38,7 +42,25 @@ public class SellerFormController implements Initializable {
     private TextField sellerNameField;
 
     @FXML
+    private TextField sellerEmailField;
+
+    @FXML
+    private DatePicker sellerDpBirthDateField;
+
+    @FXML
+    private TextField sellerBaseSalaryField;
+
+    @FXML
     private Label errorMessageLabel;
+
+    @FXML
+    private Label errorMessageLabelEmail;
+    
+    @FXML
+    private Label errorMessageLabelBirthDate;
+    
+    @FXML
+    private Label errorMessageLabelBaseSalary;
 
     @FXML
     public Button saveButton;
@@ -140,7 +162,11 @@ public class SellerFormController implements Initializable {
      */
     private void initializeNodes() {
         Constraints.setTextFieldInteger(sellerIDField);
-        Constraints.setTextFieldMaxLength(sellerNameField, 30);
+        Constraints.setTextFieldMaxLength(sellerNameField, 70);
+        Constraints.setTextFieldMaxLength(sellerEmailField, 60);
+        Constraints.setTextFieldDouble(sellerBaseSalaryField);
+        Constraints.setTextFieldMaxLength(sellerBaseSalaryField, 10);
+        Utils.formatDatePicker(sellerDpBirthDateField, "dd/MM/yyyy");
     }
 
     /**
@@ -153,6 +179,14 @@ public class SellerFormController implements Initializable {
         }
         sellerIDField.setText(String.valueOf(entity.getId()));
         sellerNameField.setText(entity.getName());
+        sellerEmailField.setText(entity.getEmail());
+        if (entity.getBirthDate() != null) {
+            sellerDpBirthDateField.setValue(LocalDate.ofInstant(entity.getBirthDate().toInstant(), ZoneId.systemDefault()));
+        } else {
+            sellerDpBirthDateField.setValue(null);
+        }
+        Locale.setDefault(Locale.US);
+        sellerBaseSalaryField.setText(String.format("%.2f", entity.getBaseSalary()));
     }
 
     private void setErrorMessages(Map<String, String> errors) {
